@@ -1,4 +1,4 @@
-# github.com/alexflint/go-arg v1.3.0
+# github.com/alexflint/go-arg v1.4.2
 ## explicit
 github.com/alexflint/go-arg
 # github.com/alexflint/go-scalar v1.0.0
@@ -14,9 +14,8 @@ github.com/golang/protobuf/proto
 # github.com/joho/godotenv v1.3.0
 ## explicit
 github.com/joho/godotenv
-# github.com/shurcooL/githubql v0.0.0-20191127044304-8f68eb5628d0
+# github.com/shurcooL/githubql v0.0.0-20210725200734-83ba7b4c9228
 ## explicit
-github.com/shurcooL/githubql
 # github.com/shurcooL/graphql v0.0.0-20181231061246-d48a9a75455f
 ## explicit
 github.com/shurcooL/graphql

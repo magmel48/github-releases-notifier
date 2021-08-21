@@ -2,7 +2,7 @@ package main
 
 import "net/url"
 
-// Repository on GitHub.
+// Repository on GitHub or Gitlab.
 type Repository struct {
 	ID          string
 	Name        string

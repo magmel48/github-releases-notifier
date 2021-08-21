@@ -1,23 +1,13 @@
-package githubv4
+package main
 
 import (
 	"crypto/x509"
 	"encoding/json"
 	"fmt"
+	"github.com/shurcooL/graphql"
 	"net/url"
 	"time"
-
-	"github.com/shurcooL/graphql"
 )
-
-// Note: These custom types are meant to be used in queries for now.
-// But the plan is to switch to using native Go types (string, int, bool, time.Time, etc.).
-// See https://github.com/shurcooL/githubv4/issues/9 for details.
-//
-// These custom types currently provide documentation, and their use
-// is required for sending outbound queries. However, native Go types
-// can be used for unmarshaling. Once https://github.com/shurcooL/githubv4/issues/9
-// is resolved, native Go types can completely replace these.
 
 type (
 	// Boolean represents true or false values.

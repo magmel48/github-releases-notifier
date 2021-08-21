@@ -1,32 +1,24 @@
 package main
 
 import (
-	"context"
-	"os"
-	"strings"
-	"time"
-
 	"github.com/alexflint/go-arg"
 	"github.com/go-kit/kit/log"
 	"github.com/go-kit/kit/log/level"
 	"github.com/joho/godotenv"
-	githubql "github.com/shurcooL/githubql"
-	"golang.org/x/oauth2"
+	"os"
+	"strings"
+	"time"
 )
 
-// Config of env and args
+// Config of env and args.
 type Config struct {
-	GithubToken     string        `arg:"env:GITHUB_TOKEN"`
+	GithubAuthToken string        `arg:"env:GITHUB_AUTH_TOKEN"`
+	GitlabAuthToken string        `arg:"env:GITLAB_AUTH_TOKEN"`
 	Interval        time.Duration `arg:"env:INTERVAL"`
 	LogLevel        string        `arg:"env:LOG_LEVEL"`
 	Repositories    []string      `arg:"-r,separate"`
 	SlackHook       string        `arg:"env:SLACK_HOOK"`
 	IgnoreNonstable bool          `arg:"env:IGNORE_NONSTABLE"`
-}
-
-// Token returns an oauth2 token or an error.
-func (c Config) Token() *oauth2.Token {
-	return &oauth2.Token{AccessToken: c.GithubToken}
 }
 
 func main() {
@@ -57,18 +49,15 @@ func main() {
 	}
 
 	if len(c.Repositories) == 0 {
-		level.Error(logger).Log("msg", "no repositories wo watch")
+		level.Error(logger).Log("msg", "no repositories to watch")
 		os.Exit(1)
 	}
 
-	tokenSource := oauth2.StaticTokenSource(c.Token())
-	client := oauth2.NewClient(context.Background(), tokenSource)
 	checker := &Checker{
 		logger: logger,
-		client: githubql.NewClient(client),
+		tokens: map[string]string{Github: c.GithubAuthToken, Gitlab: c.GitlabAuthToken},
 	}
 
-	// TODO: releases := make(chan Repository, len(c.Repositories))
 	releases := make(chan Repository)
 	go checker.Run(c.Interval, c.Repositories, releases)
 
@@ -80,6 +69,7 @@ func main() {
 			level.Debug(logger).Log("msg", "not notifying about non-stable version", "version", repository.Release.Name)
 			continue
 		}
+
 		if err := slack.Send(repository); err != nil {
 			level.Warn(logger).Log(
 				"msg", "failed to send release to messenger",
