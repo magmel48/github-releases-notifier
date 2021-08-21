@@ -30,8 +30,8 @@ docker run --rm -e GITHUB_AUTH_TOKEN=XXX GITLAB_AUTH_TOKEN=YYY -e SLACK_HOOK=htt
 
 ```bash
 kubectl create secret generic github-releases-notifier \
-        --from-literal=github=XXX` \
-        --from-literal=gitlab=XXX` \
+        --from-literal=github=XXX \
+        --from-literal=gitlab=XXX \
         --from-literal=slack=XXX
 ```
 
