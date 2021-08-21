@@ -22,11 +22,16 @@ spec:
       - name: github-releases-notifier
         image: justwatch/github-releases-notifier
         env:
-        - name: GITHUB_TOKEN
+        - name: GITHUB_AUTH_TOKEN
           valueFrom:
             secretKeyRef:
               name: github-releases-notifier
               key: github
+        - name: GITLAB_AUTH_TOKEN
+          valueFrom:
+            secretKeyRef:
+              name: github-releases-notifier
+              key: gitlab
         - name: SLACK_HOOK
           valueFrom:
             secretKeyRef:
@@ -35,13 +40,13 @@ spec:
         command:
         - '/bin/github-releases-notifier'
         args:
-        - '-r=golang/go'
-        - '-r=justwatchcom/elasticsearch_exporter'
-        - '-r=justwatchcom/gopass'
-        - '-r=justwatchcom/sql_exporter'
-        - '-r=kubernetes/minikube'
-        - '-r=prometheus/prometheus'
-        - '-r=shurcooL/githubql'
+        - '-r=github.com/golang/go'
+        - '-r=github.com/justwatchcom/elasticsearch_exporter'
+        - '-r=github.com/justwatchcom/gopass'
+        - '-r=github.com/justwatchcom/sql_exporter'
+        - '-r=github.com/kubernetes/minikube'
+        - '-r=github.com/prometheus/prometheus'
+        - '-r=github.com/shurcooL/githubql'
         resources:
           limits:
             cpu: 100m

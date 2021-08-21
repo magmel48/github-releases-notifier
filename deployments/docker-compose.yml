@@ -8,10 +8,10 @@ services:
       - GITHUB_TOKEN=XXX
       - SLACK_HOOK=https://hooks.slack.com/services/T02MASDF7/B6WERHYRZ/XXX
     command:
-      - '-r=golang/go'
-      - '-r=justwatchcom/elasticsearch_exporter'
-      - '-r=justwatchcom/gopass'
-      - '-r=justwatchcom/sql_exporter'
-      - '-r=kubernetes/minikube'
-      - '-r=prometheus/prometheus'
-      - '-r=shurcooL/githubql'
+      - '-r=github.com/golang/go'
+      - '-r=github.com/justwatchcom/elasticsearch_exporter'
+      - '-r=github.com/justwatchcom/gopass'
+      - '-r=github.com/justwatchcom/sql_exporter'
+      - '-r=github.com/kubernetes/minikube'
+      - '-r=github.com/prometheus/prometheus'
+      - '-r=github.com/shurcooL/githubql'

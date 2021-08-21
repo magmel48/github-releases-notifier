@@ -1,16 +1,12 @@
 # github-releases-notifier
 
-[![Build Status](https://travis-ci.org/justwatchcom/github-releases-notifier.svg?branch=master)](https://travis-ci.org/justwatchcom/github-releases-notifier)
-[![Go Report Card](https://goreportcard.com/badge/github.com/justwatchcom/github-releases-notifier)](https://goreportcard.com/report/github.com/justwatchcom/github-releases-notifier)
-[![Docker Pulls](https://img.shields.io/docker/pulls/justwatch/github-releases-notifier.svg?maxAge=604800)](https://hub.docker.com/r/justwatch/github-releases-notifier)
-
-Receive Slack notifications if a new release of your favorite software is available on GitHub.
+Receive Slack notifications if a new release of your favorite software is available on GitHub or Gitlab.
 
 ![screenshot.png](screenshot.png)
 
 ### Watching repositories
 
-To watch repositories simply add them to the list of arguments `-r=kubernetes/kubernetes -r=prometheus/prometheus` and so on.
+To watch repositories simply add them to the list of arguments `-r=github.com/kubernetes/kubernetes -r=gitlab.com/tezos/tezos` and so on.
 
 ### Deploying
 
@@ -20,7 +16,7 @@ To watch repositories simply add them to the list of arguments `-r=kubernetes/ku
 #### Docker
 
 ```
-docker run --rm -e GITHUB_TOKEN=XXX -e SLACK_HOOK=https://hooks.slack.com/... justwatch/github-releases-notifier -r=kubernetes/kubernetes
+docker run --rm -e GITHUB_AUTH_TOKEN=XXX GITLAB_AUTH_TOKEN=YYY -e SLACK_HOOK=https://hooks.slack.com/... justwatch/github-releases-notifier -r=github.com/kubernetes/kubernetes
 ```
 
 #### docker-compose
@@ -35,6 +31,7 @@ docker run --rm -e GITHUB_TOKEN=XXX -e SLACK_HOOK=https://hooks.slack.com/... ju
 ```bash
 kubectl create secret generic github-releases-notifier \
         --from-literal=github=XXX` \
+        --from-literal=gitlab=XXX` \
         --from-literal=slack=XXX
 ```
 

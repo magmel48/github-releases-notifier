@@ -52,10 +52,14 @@ func (c *Checker) Run(interval time.Duration, repositories []string, releases ch
 			var nextRepo Repository
 			var err error
 
-			if website == Github || website == Gitlab {
-				nextRepo, err = c.query(website, owner, name)
+			if name != "" {
+				if website == Github || website == Gitlab {
+					nextRepo, err = c.query(website, owner, name)
+				} else {
+					err = errors.New(website + " is not supported")
+				}
 			} else {
-				err = errors.New(website + " is not supported")
+				err = errors.New("no website specified")
 			}
 
 			if err != nil {
