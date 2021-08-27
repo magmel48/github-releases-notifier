@@ -170,7 +170,7 @@ func (c *Checker) query(website string, owner string, name string) (Repository, 
 		return Repository{}, fmt.Errorf("can't find any releases for %s/%s", owner, name)
 	}
 
-	releaseID, ok := queryResult.GetLatestReleaseID().(string)
+	releaseID, ok := queryResult.GetLatestReleaseID().(String)
 	if !ok {
 		return Repository{}, fmt.Errorf("can't convert release id to string: %v", queryResult.GetLatestReleaseID())
 	}
@@ -183,7 +183,7 @@ func (c *Checker) query(website string, owner string, name string) (Repository, 
 		URL:         *queryResult.GetURL(),
 
 		Release: Release{
-			ID:          releaseID,
+			ID:          string(releaseID),
 			Name:        string(queryResult.GetLatestReleaseName()),
 			Description: string(queryResult.GetLatestReleaseDescription()),
 			URL:         *queryResult.GetLatestReleaseURL(),
