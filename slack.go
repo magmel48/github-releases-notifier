@@ -12,22 +12,22 @@ import (
 
 // SlackSender has the hook to send slack notifications.
 type SlackSender struct {
-	Hook		string
-	Username	string
-	Icon		string
+	Hook     string
+	Username string
+	Icon     string
 }
 
 type slackPayload struct {
-	Username	string	`json:"username"`
-	IconUrl		string	`json:"icon_url"`
-	Text		string	`json:"text"`
+	Username string `json:"username"`
+	IconUrl  string `json:"icon_url"`
+	Text     string `json:"text"`
 }
 
 // Send a notification with a formatted message build from the repository.
 func (s *SlackSender) Send(repository Repository) error {
 	payload := slackPayload{
-		Username:  s.Username,
-		IconUrl: s.Icon,
+		Username: s.Username,
+		IconUrl:  s.Icon,
 		Text: fmt.Sprintf(
 			"<%s|%s/%s>: <%s|%s> released",
 			repository.URL.String(),
