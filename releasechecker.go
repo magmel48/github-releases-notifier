@@ -151,7 +151,7 @@ func (c *Checker) query(website string, owner string, name string) (Repository, 
 	} else if website == Gitlab {
 		// variables must be recreated because specifying unused map keys will throw error
 		variables = map[string]interface{}{
-			"fullPath": String(owner + "/" + name),
+			"fullPath": owner + "/" + name,
 		}
 
 		queryResult, err = c.queryGitlab(client, variables)
