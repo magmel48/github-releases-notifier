@@ -6,8 +6,8 @@ import (
 
 type SlackConfig struct {
 	Hook     string `arg:"env:SLACK_HOOK"`
-	Username string `arg:"env:SLACK_USERNAME" default:"Releases Notifier"`
-	Icon     string `arg:"env:SLACK_ICON" default:"https://github.githubassets.com/favicons/favicon.png"`
+	Username string `arg:"env:SLACK_USERNAME",default:"Releases Notifier"`
+	Icon     string `arg:"env:SLACK_ICON",default:"https://github.githubassets.com/favicons/favicon.png"`
 }
 
 type Config struct {
