@@ -172,7 +172,13 @@ func (c *Checker) query(website string, owner string, name string) (Repository, 
 
 	releaseID, ok := queryResult.GetLatestReleaseID().(String)
 	if !ok {
-		return Repository{}, fmt.Errorf("can't convert release id to string: %v", queryResult.GetLatestReleaseID())
+		rID, ok := queryResult.GetLatestReleaseID().(string)
+
+		if !ok {
+			return Repository{}, fmt.Errorf("can't convert release id to string: %v", queryResult.GetLatestReleaseID())
+		} else {
+			releaseID = String(rID)
+		}
 	}
 
 	return Repository{
