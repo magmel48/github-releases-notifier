@@ -10,17 +10,6 @@ import (
 	"time"
 )
 
-// Config of env and args.
-type Config struct {
-	GithubAuthToken string        `arg:"env:GITHUB_AUTH_TOKEN"`
-	GitlabAuthToken string        `arg:"env:GITLAB_AUTH_TOKEN"`
-	Interval        time.Duration `arg:"env:INTERVAL"`
-	LogLevel        string        `arg:"env:LOG_LEVEL"`
-	Repositories    []string      `arg:"-r,separate"`
-	SlackHook       string        `arg:"env:SLACK_HOOK"`
-	IgnoreNonstable bool          `arg:"env:IGNORE_NONSTABLE"`
-}
-
 func main() {
 	_ = godotenv.Load()
 
@@ -61,7 +50,7 @@ func main() {
 	releases := make(chan Repository)
 	go checker.Run(c.Interval, c.Repositories, releases)
 
-	slack := SlackSender{Hook: c.SlackHook}
+	slack := SlackSender{Hook: c.Hook, Username: c.Username, Icon: c.Icon}
 
 	level.Info(logger).Log("msg", "waiting for new releases")
 	for repository := range releases {
