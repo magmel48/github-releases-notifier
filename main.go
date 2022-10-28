@@ -5,6 +5,7 @@ import (
 	"github.com/go-kit/kit/log"
 	"github.com/go-kit/kit/log/level"
 	"github.com/joho/godotenv"
+	models2 "github.com/magmel48/github-releases-notifier/pkg/models"
 	"os"
 	"strings"
 	"time"
@@ -13,7 +14,7 @@ import (
 func main() {
 	_ = godotenv.Load()
 
-	c := Config{
+	c := models2.Config{
 		Interval: time.Hour,
 		LogLevel: "info",
 	}
@@ -47,7 +48,7 @@ func main() {
 		tokens: map[string]string{Github: c.GithubAuthToken, Gitlab: c.GitlabAuthToken},
 	}
 
-	releases := make(chan Repository)
+	releases := make(chan models2.Repository)
 	go checker.Run(c.Interval, c.Repositories, releases)
 
 	slack := SlackSender{Hook: c.Hook, Username: c.Username, Icon: c.Icon}

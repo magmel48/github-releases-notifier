@@ -5,6 +5,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"github.com/magmel48/github-releases-notifier/pkg/models"
 	"io/ioutil"
 	"net/http"
 	"time"
@@ -24,7 +25,7 @@ type slackPayload struct {
 }
 
 // Send a notification with a formatted message build from the repository.
-func (s *SlackSender) Send(repository Repository) error {
+func (s *SlackSender) Send(repository models.Repository) error {
 	payload := slackPayload{
 		Username: s.Username,
 		IconUrl:  s.Icon,

@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"github.com/magmel48/github-releases-notifier/pkg/models"
 	"golang.org/x/oauth2"
 	"net/url"
 	"strings"
@@ -22,26 +23,26 @@ var ApiUrl = map[string]string{Github: "https://api.github.com/graphql", Gitlab:
 type Checker struct {
 	logger   log.Logger
 	tokens   map[string]string
-	releases map[string]Repository
+	releases map[string]models.Repository
 }
 
 type QueryResult interface {
-	GetID() ID
-	GetName() String
-	GetDescription() String
+	GetID() models.ID
+	GetName() models.String
+	GetDescription() models.String
 	GetURL() *url.URL
 	GetReleasesCount() int
-	GetLatestReleaseID() ID
-	GetLatestReleaseName() String
-	GetLatestReleaseDescription() String
+	GetLatestReleaseID() models.ID
+	GetLatestReleaseName() models.String
+	GetLatestReleaseDescription() models.String
 	GetLatestReleaseURL() *url.URL
 	GetLatestReleasePublishingDate() time.Time
 }
 
 // Run the queries and comparisons for the given repositories in a given interval.
-func (c *Checker) Run(interval time.Duration, repositories []string, releases chan<- Repository) {
+func (c *Checker) Run(interval time.Duration, repositories []string, releases chan<- models.Repository) {
 	if c.releases == nil {
-		c.releases = make(map[string]Repository)
+		c.releases = make(map[string]models.Repository)
 	}
 
 	for {
@@ -49,7 +50,7 @@ func (c *Checker) Run(interval time.Duration, repositories []string, releases ch
 			s := strings.Split(repoName, "/")
 			website, owner, name := s[0], s[1], s[2]
 
-			var nextRepo Repository
+			var nextRepo models.Repository
 			var err error
 
 			if name != "" {
@@ -108,7 +109,7 @@ func (c *Checker) getClient(website string) (*graphql.Client, error) {
 }
 
 func (c *Checker) queryGithub(client *graphql.Client, variables map[string]interface{}) (QueryResult, error) {
-	query := GithubQuery{}
+	query := models.GithubQuery{}
 
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
@@ -120,7 +121,7 @@ func (c *Checker) queryGithub(client *graphql.Client, variables map[string]inter
 }
 
 func (c *Checker) queryGitlab(client *graphql.Client, variables map[string]interface{}) (QueryResult, error) {
-	query := GitlabQuery{}
+	query := models.GitlabQuery{}
 
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
@@ -131,19 +132,19 @@ func (c *Checker) queryGitlab(client *graphql.Client, variables map[string]inter
 	return query, nil
 }
 
-func (c *Checker) query(website string, owner string, name string) (Repository, error) {
+func (c *Checker) query(website string, owner string, name string) (models.Repository, error) {
 	var client *graphql.Client
 	var queryResult QueryResult
 	var err error
 
 	client, err = c.getClient(website)
 	if err != nil {
-		return Repository{}, err
+		return models.Repository{}, err
 	}
 
 	variables := map[string]interface{}{
-		"owner": String(owner),
-		"name":  String(name),
+		"owner": models.String(owner),
+		"name":  models.String(name),
 	}
 
 	if website == Github {
@@ -158,37 +159,37 @@ func (c *Checker) query(website string, owner string, name string) (Repository, 
 	}
 
 	if err != nil {
-		return Repository{}, err
+		return models.Repository{}, err
 	}
 
 	repositoryID, ok := queryResult.GetID().(string)
 	if !ok {
-		return Repository{}, fmt.Errorf("can't convert repository id to string: %v", queryResult.GetID())
+		return models.Repository{}, fmt.Errorf("can't convert repository id to string: %v", queryResult.GetID())
 	}
 
 	if queryResult.GetReleasesCount() == 0 {
-		return Repository{}, fmt.Errorf("can't find any releases for %s/%s", owner, name)
+		return models.Repository{}, fmt.Errorf("can't find any releases for %s/%s", owner, name)
 	}
 
-	releaseID, ok := queryResult.GetLatestReleaseID().(String)
+	releaseID, ok := queryResult.GetLatestReleaseID().(models.String)
 	if !ok {
 		rID, ok := queryResult.GetLatestReleaseID().(string)
 
 		if !ok {
-			return Repository{}, fmt.Errorf("can't convert release id to string: %v", queryResult.GetLatestReleaseID())
+			return models.Repository{}, fmt.Errorf("can't convert release id to string: %v", queryResult.GetLatestReleaseID())
 		} else {
-			releaseID = String(rID)
+			releaseID = models.String(rID)
 		}
 	}
 
-	return Repository{
+	return models.Repository{
 		ID:          repositoryID,
 		Name:        string(queryResult.GetName()),
 		Owner:       owner,
 		Description: string(queryResult.GetDescription()),
 		URL:         *queryResult.GetURL(),
 
-		Release: Release{
+		Release: models.Release{
 			ID:          string(releaseID),
 			Name:        string(queryResult.GetLatestReleaseName()),
 			Description: string(queryResult.GetLatestReleaseDescription()),

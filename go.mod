@@ -1,4 +1,4 @@
-module github.com/marthjod/github-releases-notifier
+module github.com/magmel48/github-releases-notifier
 
 go 1.14
 
